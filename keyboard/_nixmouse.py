@@ -63,7 +63,7 @@ button_by_code = {
     BTN_EXTRA: X2,
 }
 code_by_button = {button: code for code, button in button_by_code.items()}
-    
+
 device = None
 def build_device():
     global device
@@ -74,6 +74,7 @@ init = build_device
 
 def listen(queue):
     build_device()
+    global device
 
     while True:
         time, type, code, value, device = device.read_event()
@@ -93,11 +94,11 @@ def listen(queue):
             elif code in (REL_X, REL_Y):
                 x, y = get_position()
                 event = MoveEvent(x, y, time)
-        
+
         if event is None:
             # Unknown event type.
             continue
-            
+
         queue.put(event)
 
 def press(button=LEFT):
@@ -123,7 +124,7 @@ def wheel(delta=1):
     if delta < 0:
         delta += 2**32
     device.write_event(EV_REL, REL_WHEEL, delta)
-    
+
 
 if __name__ == '__main__':
     #listen(print)
